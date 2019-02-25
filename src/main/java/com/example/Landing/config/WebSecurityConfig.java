@@ -1,26 +1,31 @@
 package com.example.Landing.config;
 
+import com.example.Landing.domain.Role;
 import com.example.Landing.domain.User;
 import com.example.Landing.repo.UserDetailsRepo;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.time.LocalDateTime;
 
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Sso
+
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .antMatcher("/**")
                 .authorizeRequests()
+                .mvcMatchers("/message").hasAuthority(Role.ADMIN_ROLE.name())
                 .antMatchers("/", "/login**", "/js/**", "/error**").permitAll()
                 .anyRequest()
                 .authenticated()
@@ -46,6 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 return newUser;
             });
 
+          user.setRole(Role.ADMIN_ROLE.name());
           user.setLastVisit(LocalDateTime.now());
          return userDetailsRepo.save(user);
         };
