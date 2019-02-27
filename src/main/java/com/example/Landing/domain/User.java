@@ -1,93 +1,77 @@
 package com.example.Landing.domain;
 
+import com.example.Landing.utils.AuthHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Table(name = "usr")
 @Data
 @EqualsAndHashCode(of = {"id"})
-public class User {
+public class User implements UserDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    private String name;
-    private String userpic;
+    private String username;
+    private String password;
     private String email;
-    private String gender;
-    private String locale;
-    private LocalDateTime lastVisit;
+    private String[] grantedAuthorities;
+    private String firstName;
+    private String lastName;
 
-    public String getRole() {
-        return role;
+    public static User of(UserInDTO data) {
+        return new User(data.getUsername(), data.getPassword(), data.getRole(), data.getEmail(), data.getFirstName(),
+                data.getLastName());
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    private String role;
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUserpic() {
-        return userpic;
-    }
-
-    public void setUserpic(String userpic) {
-        this.userpic = userpic;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+    public User(String username, String password, Role grantedAuthorities, String email, String firstName,
+                String lastName) {
+        this.username = username;
+        this.password = password;
+        this.grantedAuthorities = AuthHelper.convertToAuthorities(grantedAuthorities);
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public String getGender() {
-        return gender;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return AuthorityUtils.createAuthorityList(grantedAuthorities);
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    @Override
+    public String getPassword() {
+        return this.password;
     }
 
-    public String getLocale() {
-        return locale;
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public LocalDateTime getLastVisit() {
-        return lastVisit;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setLastVisit(LocalDateTime lastVisit) {
-        this.lastVisit = lastVisit;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

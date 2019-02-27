@@ -14,7 +14,7 @@ public class MainController {
     public String greeting(@AuthenticationPrincipal User user) {
         String greet;
         if(user != null) {
-            greet = "Hello, " + user.getName();
+            greet = "Hello, " + user.getUsername();
         }
         else{
             greet  = "Hello, world";
