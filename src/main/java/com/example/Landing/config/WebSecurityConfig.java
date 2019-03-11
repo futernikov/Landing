@@ -1,25 +1,27 @@
 package com.example.Landing.config;
 
 import com.example.Landing.domain.Role;
-import com.example.Landing.domain.User;
-import com.example.Landing.repo.UserDetailsRepo;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
-
 @Configuration
 @EnableWebSecurity
-@EnableOAuth2Sso
-
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Qualifier("myUserDetailsService")
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -27,8 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/message").permitAll()
-                .mvcMatchers("/user").permitAll()
-                //.hasAuthority(Role.USER_ROLE.name())
+                .mvcMatchers("/user/admin/**")
+                .hasAuthority(Role.ROLE_ADMIN.name())
                 .mvcMatchers("/api/secured/**")
                 .authenticated();
     }
@@ -36,5 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(8);
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(encoder);
     }
 }

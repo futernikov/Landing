@@ -1,24 +1,29 @@
 package com.example.Landing.domain;
 
 import com.example.Landing.utils.AuthHelper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "usr")
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
     private String username;
+    @JsonIgnore
     private String password;
     private String email;
     private String[] grantedAuthorities;
@@ -26,7 +31,8 @@ public class User implements UserDetails {
     private String lastName;
 
     public static User of(UserInDTO data) {
-        return new User(data.getUsername(), data.getPassword(), data.getRole(), data.getEmail(), data.getFirstName(),
+        return new User(data.getUsername(), data.getPassword(),
+                data.getRole(), data.getEmail(), data.getFirstName(),
                 data.getLastName());
     }
 
@@ -39,6 +45,28 @@ public class User implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
+    public static User merge(User fromDb, UserInDTO data) {
+        fromDb.setEmail(data.getEmail());
+        fromDb.setFirstName(data.getFirstName());
+        fromDb.setLastName(data.getLastName());
+        fromDb.setGrantedAuthorities(new String[] {data.getRole().name()});
+        return fromDb;
+    }
+
+    public User(Long id, String username, String password, String[] grantedAuthorities) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.grantedAuthorities = grantedAuthorities;
+    }
+
+    public User(String username, String password, List<Role> grantedAuthorities) {
+        this.username = username;
+        this.password = password;
+        this.grantedAuthorities = AuthHelper.convertToAuthorities(grantedAuthorities);
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -7,18 +7,24 @@ import com.example.Landing.exeption.ErrorCodes;
 import com.example.Landing.exeption.RestException;
 import com.example.Landing.repo.UserDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserManagementService {
     @Autowired
     UserDetailsRepo userDetailsRepo;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-    public User cerateUser(User requester, UserInDTO data){
+
+
+    public User createUser(User requester, UserInDTO data){
+        data.setPassword(passwordEncoder.encode(data.getPassword()));
         return userDetailsRepo.save(User.of(data));
     }
 
-    public User getUser(String id) {
+    public User getUser(Long id) {
         return userDetailsRepo.findById(id).orElseThrow(()-> new RestException(ErrorCodes.USER_NOT_EXIST));
     }
 
