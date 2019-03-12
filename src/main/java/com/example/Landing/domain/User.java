@@ -47,6 +47,7 @@ public class User implements UserDetails {
     }
 
     public static User merge(User fromDb, UserInDTO data) {
+        fromDb.setUsername(data.getUsername());
         fromDb.setEmail(data.getEmail());
         fromDb.setFirstName(data.getFirstName());
         fromDb.setLastName(data.getLastName());

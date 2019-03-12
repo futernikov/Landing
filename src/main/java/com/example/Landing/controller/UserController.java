@@ -39,21 +39,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/login")
-    public User login(@AuthenticationPrincipal User requester) {
-        log.info("Login: {}", requester );
-        return userManagementService.getUser(requester.getId());
-    }
-
-    @PostMapping("/login")
-    public User loginPost(@AuthenticationPrincipal User requester) {
-        log.info("Login: {}", requester);
-        return userManagementService.getUser(requester.getId());
-    }
-
     @PostMapping("")
     public User createUser(@AuthenticationPrincipal User requester, @Validated @RequestBody UserInDTO data) {
         return userManagementService.createUser(requester, data);
+    }
+
+    @PutMapping(value = "update/{userId}")
+    public User updateUser(@AuthenticationPrincipal User requester, @Validated @RequestBody UserInDTO data,
+                           @PathVariable Long userId){
+        log.info("updateUser: data = {}, userId = {}", data, userId);
+        return userManagementService.updateUser(requester, userId, data);
+    }
+
+    @DeleteMapping("delete/{userId}")
+    public void deleteUser(@AuthenticationPrincipal User requester, @PathVariable Long userId){
+        log.info("deleteUser: userId = {}", userId);
+        userManagementService.deleteUser(requester, userId);
     }
 
 }
