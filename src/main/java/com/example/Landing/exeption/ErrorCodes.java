@@ -23,7 +23,10 @@ public enum ErrorCodes {
     USER_ALREADY_EXIST("002004", "user_already_exist", HttpStatus.BAD_REQUEST),
     USER_WRONG_EMAIL("002005", "user_wrong_email", HttpStatus.BAD_REQUEST),
     USER_WRONG_ID("002006", "user_wrong_id", HttpStatus.BAD_REQUEST),
-    USER_EMPTY_DATA("002007", "user_empty_data", HttpStatus.BAD_REQUEST);
+    USER_EMPTY_DATA("002007", "user_empty_data", HttpStatus.BAD_REQUEST),
+    EMPTY_FILE("002008","empty_file",HttpStatus.BAD_REQUEST),
+    FILE_ERROR("002009","error_file",HttpStatus.BAD_REQUEST),
+    NOT_FOUND("002010","not_found",HttpStatus.BAD_REQUEST);
 
     private final String errorCode;
     private final String message;
