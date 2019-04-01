@@ -3,6 +3,7 @@ package com.example.Landing.controller;
 import com.example.Landing.domain.User;
 import com.example.Landing.domain.UserInDTO;
 import com.example.Landing.repo.UserDetailsRepo;
+import com.example.Landing.services.MailSenderService;
 import com.example.Landing.services.UserManagementService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+
+import java.util.List;
 
 import static com.example.Landing.domain.Role.ROLE_ADMIN;
 
@@ -28,19 +31,28 @@ public class UserController {
     @Autowired
     UserDetailsRepo userDetailsRepo;
 
+    @Autowired
+    MailSenderService mailSenderService;
+
     @PostConstruct
     public void initUser(){
         long count = userDetailsRepo.count();
         if(count == 0){
             UserInDTO data = new UserInDTO("admin", "admin", ROLE_ADMIN,
-                    "email", "Eugene", "Lanets");
+                    "lanec120898@gmail.com", "Eugene", "Lanets");
 
             userManagementService.createUser(null, data);
         }
     }
 
+    @GetMapping("")
+    public List<User> getAllUsers(){
+        return userDetailsRepo.findAll();
+    }
+
     @PostMapping("")
     public User createUser(@AuthenticationPrincipal User requester, @Validated @RequestBody UserInDTO data) {
+        mailSenderService.sendMessage(data.getEmail(),data.getPassword(), data.getUsername());
         return userManagementService.createUser(requester, data);
     }
 

@@ -25,4 +25,12 @@ public class Page {
     private String contentType;
     private String title;
     private String description;
+
+    public Page(Type type, String name, LocalDateTime createdAt, String title, String description) {
+        this.type = type;
+        this.name = name;
+        this.createdAt = createdAt;
+        this.title = title;
+        this.description = description;
+    }
 }

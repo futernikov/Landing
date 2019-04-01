@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder encoder;
@@ -31,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/message").permitAll()
                 .mvcMatchers("/user/admin/**")
                 .hasAuthority(Role.ROLE_ADMIN.name())
+
                 .mvcMatchers("/api/secured/**")
                 .authenticated();
     }
