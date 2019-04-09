@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/message").permitAll()
+                .mvcMatchers("view/users/**").permitAll()
                 .mvcMatchers("/user/admin/**")
                 .hasAuthority(Role.ROLE_ADMIN.name())
 

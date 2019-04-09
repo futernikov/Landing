@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "pages", schema = "public")
@@ -19,14 +20,14 @@ public class Page {
     @Enumerated(EnumType.STRING)
     private Type type;
     private String name;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Date createdAt = new Date(System.currentTimeMillis());
     @ManyToOne(targetEntity = User.class)
     private User user;
     private String contentType;
     private String title;
     private String description;
 
-    public Page(Type type, String name, LocalDateTime createdAt, String title, String description) {
+    public Page(Type type, String name, Date createdAt, String title, String description) {
         this.type = type;
         this.name = name;
         this.createdAt = createdAt;

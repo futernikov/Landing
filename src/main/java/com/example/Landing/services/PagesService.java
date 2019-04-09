@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 public class PagesService {
@@ -33,7 +34,7 @@ public class PagesService {
             throw new RestException(ErrorCodes.EMPTY_FILE);
         }
         String fileName = file.getOriginalFilename();
-        Page page = pagesRepo.save(new Page(null,type,fileName,LocalDateTime.now(),requester,file.getContentType()
+        Page page = pagesRepo.save(new Page(null,type,fileName,new Date(),requester,file.getContentType()
                 ,title,description));
         Path path = Paths.get(uploadPagePath, page.getId() +".zip");
         Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);

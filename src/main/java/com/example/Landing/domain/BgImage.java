@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "bgImg", schema = "public")
@@ -22,5 +23,5 @@ public class BgImage {
     private int height;
     private String contentType;
     private boolean isPaid;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Date createdAt = new Date(System.currentTimeMillis());
 }

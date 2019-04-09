@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 public class BgImageService {
@@ -27,7 +28,7 @@ public class BgImageService {
             throw new RestException(ErrorCodes.EMPTY_FILE);
         }
         String fileName = file.getOriginalFilename();
-        BgImage bgImage = bgImageRepo.save(new BgImage(null,fileName,(int)file.getSize(),width, height,file.getContentType(),isPaid, LocalDateTime.now()));
+        BgImage bgImage = bgImageRepo.save(new BgImage(null,fileName,(int)file.getSize(),width, height,file.getContentType(),isPaid, new Date(System.currentTimeMillis())));
         Path path = Paths.get(uploadPath, bgImage.getId() +".png");
         Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
         return bgImage;

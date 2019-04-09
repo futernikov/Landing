@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @SpringBootTest(classes = {LandingApplicationTest.class})
 @RunWith(SpringRunner.class)
@@ -21,6 +22,6 @@ public class PagesRepoTest {
     PagesRepo pagesRepo;
    @Test
     public void saveTest(){
-    pagesRepo.save(new Page( Type.AUTO,"testData", LocalDateTime.now(),"test","test"));
+    pagesRepo.save(new Page( Type.AUTO,"testData", new Date(),"test","test"));
     }
 }

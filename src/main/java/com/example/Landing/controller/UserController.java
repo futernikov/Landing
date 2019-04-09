@@ -2,7 +2,6 @@ package com.example.Landing.controller;
 
 import com.example.Landing.domain.User;
 import com.example.Landing.domain.UserInDTO;
-import com.example.Landing.repo.UserDetailsRepo;
 import com.example.Landing.services.MailSenderService;
 import com.example.Landing.services.UserManagementService;
 import lombok.extern.log4j.Log4j2;
@@ -12,11 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-
 import java.util.List;
-
-import static com.example.Landing.domain.Role.ROLE_ADMIN;
 
 @Log4j2
 @RestController
@@ -28,26 +23,14 @@ public class UserController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    UserDetailsRepo userDetailsRepo;
 
     @Autowired
     MailSenderService mailSenderService;
 
-    @PostConstruct
-    public void initUser(){
-        long count = userDetailsRepo.count();
-        if(count == 0){
-            UserInDTO data = new UserInDTO("admin", "admin", ROLE_ADMIN,
-                    "lanec120898@gmail.com", "Eugene", "Lanets");
-
-            userManagementService.createUser(null, data);
-        }
-    }
 
     @GetMapping("")
     public List<User> getAllUsers(){
-        return userDetailsRepo.findAll();
+        return userManagementService.getAll();
     }
 
     @PostMapping("")

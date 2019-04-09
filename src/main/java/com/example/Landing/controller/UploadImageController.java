@@ -21,14 +21,12 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @RestController
 @RequestMapping("/user/admin/image")
 public class UploadImageController {
 
-    private static final String DEFAULT_FILE_NAME = "2.png";
     @Value("${upload.path}")
     private String uploadPath;
     @Autowired
